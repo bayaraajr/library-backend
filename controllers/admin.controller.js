@@ -15,7 +15,7 @@ exports.createAdmin = async (req, res) => {
         });
     }
 };
-exports.updateBook = async (req) => {
+exports.updateAdmin = async (req) => {
     try {
         // console.log(req);
         await Admin.findByIdAndUpdate(req.params.id, req.body);

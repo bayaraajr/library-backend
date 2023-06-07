@@ -14,13 +14,13 @@ const UserSchema = new Schema({
         required: true,
         unique: true,
         validate: {
-          validator: function (value) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(value);
-          },
-          message: "Invalid email address",
+            validator: function (value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value);
+            },
+            message: "Invalid email address",
         },
-      },
+    },
     hash: String,
     salt: String,
     gender: {
