@@ -4,7 +4,7 @@ exports.registerBook = async (req) => {
     try {
         // console.log(req);
         await Book.create(req.body);
-        await Book.deleteOne("");
+        // await Book.deleteOne("");
 
         return {
             message: "Successfully registered a book",
@@ -20,7 +20,6 @@ exports.updateBook = async (req) => {
         // console.log(req);
         await Book.findByIdAndUpdate(req.params.id, req.body);
         // await Book.deleteOne("");
-
         return {
             message: "Successfully registered a book",
         };
