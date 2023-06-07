@@ -3,7 +3,6 @@ const Admin = require("../models/Admin");
 exports.createAdmin = async (req, res) => {
     try {
         // console.log(req);
-        throw new Error("error");
         await Admin.create(req.body);
         // await Admin.deleteOne("");
 
@@ -16,7 +15,7 @@ exports.createAdmin = async (req, res) => {
         });
     }
 };
-exports.updateBook = async (req, res) => {
+exports.updateBook = async (req) => {
     try {
         // console.log(req);
         await Admin.findByIdAndUpdate(req.params.id, req.body);
@@ -43,8 +42,8 @@ exports.deleteAdmin = async (req, res) => {
         };
     } catch (error) {
         console.log(error);
-        return {
+        return res.status(400).send({
             error: "Error",
-        };
+        });
     }
 };

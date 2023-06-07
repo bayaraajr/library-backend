@@ -1,10 +1,6 @@
-const { createAdmin } = require("../../../controllers/admin.controller");
+const { createAdmin, updateAdmin, deleteAdmin } = require("../../../controllers/admin.controller");
 
-module.exports = function (fastify, opts, next) {
-    fastify.post("/", registerAdmin);
-    fastify.put("/:id", updateAdmin);
-    fastify.delete("/:id", deleteAdmin);
-    next();
+module.exports     = function (fastify, opts, next){fastify.post("/", createAdmin); fastify.put("/:id", updateAdmin); fastify.delete("/:id", deleteAdmin); next();
 };
 
 // exports.autoPrefix = '/api/test'
