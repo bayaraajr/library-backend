@@ -25,7 +25,6 @@ exports.login = async (req, res) => {
             };
         } else throw new Error("Invalid password");
     } catch (error) {
-        console.log(error);
         return res.status(400).send({
             message: "Invalid password",
         });
