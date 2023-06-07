@@ -4,6 +4,9 @@ const BookSchema = new Schema({
     name: String,
     publicationDate: Date,
     author: String,
+    category: String,
+    description: String,
+    filePath: String,
 });
 
 module.exports = model("book", BookSchema);
