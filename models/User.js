@@ -1,12 +1,33 @@
 const { Schema, model } = require("mongoose");
 const UserSchema = new Schema({
-    firstname: String,
-    lastname: String,
+    firstname: {
+        type: String,
+        required: true,
+    },
+    lastname: {
+        type: String,
+        required: true,
+    },
     phone: String,
-    email: String,
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        validate: {
+          validator: function (value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(value);
+          },
+          message: "Invalid email address",
+        },
+      },
     hash: String,
     salt: String,
-    gender: String,
+    gender: {
+        type: String,
+        enum: ["F", "M"],
+        required: true,
+    },
     registrationNumber: String,
     birthDate: Date,
 });
