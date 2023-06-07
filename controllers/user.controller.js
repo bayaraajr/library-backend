@@ -5,9 +5,9 @@ exports.registerUser = async (req, res) => {
         // console.log(req);
         await User.create(req.body);
 
-        return {
+        return res.status(201).send({
             message: "Successfully registered a user",
-        };
+        });
     } catch (error) {
         return {
             error: "Error",
@@ -17,13 +17,13 @@ exports.registerUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         await User.findOneAndUpdate(req.body.email, req.body);
-        
-        return{
-            message: "Successfully changed a user"
-        }
+
+        return res.status(203).send({
+            message: "Successfully changed a user",
+        });
     } catch (error) {
         return {
-            error: "Error"
-        }
+            error: "Error",
+        };
     }
-}
+};
