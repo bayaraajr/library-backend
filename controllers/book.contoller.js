@@ -1,6 +1,6 @@
 const Book = require("../models/Book");
 
-exports.registerBook = async (req, res) => {
+exports.registerBook = async (req) => {
     try {
         // console.log(req);
         await Book.create(req.body);
@@ -15,7 +15,7 @@ exports.registerBook = async (req, res) => {
         };
     }
 };
-exports.updateBook = async (req, res) => {
+exports.updateBook = async (req) => {
     try {
         // console.log(req);
         await Book.findByIdAndUpdate(req.params.id, req.body);
