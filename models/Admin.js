@@ -1,12 +1,22 @@
 const { Schema, model } = require("mongoose");
 const AdminSchema = new Schema({
-    firstname: {
+    required: [
+        "firstname",
+        "lastname",
+        "phone",
+        "email",
+        "gender",
+        "birthDate",
+    ],
+    firstname: String,
+    lastname: String,
+    hash: String,
+    salt: String,
+    registrationNumber: String,
+
+    gender: {
         type: String,
-        required: true,
-    },
-    lastname: {
-        type: String,
-        required: true,
+        enum: ["F", "M"],
     },
     phone: {
         type: Number,
@@ -18,7 +28,6 @@ const AdminSchema = new Schema({
             message: "Invalid phone number, Must be 8 digits",
         },
         unique: true,
-        required: true,
     },
     email: {
         type: String,
@@ -30,15 +39,18 @@ const AdminSchema = new Schema({
             message: "Invalid email address",
         },
         unique: true,
-        required: true,
     },
-    hash: String,
-    salt: String,
-    gender: {
-        String,
+
+    birthDate: {
+        type: Date,
+        validate: {
+            validator: function (value) {
+                const currentDate = new Date();
+                return value <= currentDate;
+            },
+            message: "Must be under current day",
+        },
     },
-    registrationNumber: String,
-    birthDate: Date,
 });
 
 module.exports = model("admin", AdminSchema);
