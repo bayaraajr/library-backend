@@ -14,3 +14,16 @@ exports.registerUser = async (req, res) => {
         };
     }
 };
+exports.updateUser = async (req, res) => {
+    try {
+        await User.findOneAndUpdate(req.body.email, req.body);
+        
+        return{
+            message: "Successfully changed a user"
+        }
+    } catch (error) {
+        return {
+            error: "Error"
+        }
+    }
+}
