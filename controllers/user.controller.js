@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
+const { generateJWT } = require("../utils/jwt");
 
 exports.login = async (req, res) => {
     try {
@@ -17,15 +17,7 @@ exports.login = async (req, res) => {
             .digest("hex");
 
         // @TODO Generate JWT (JSON Web Token)
-        const token = jwt.sign(
-            {
-                userId: user._id,
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "10h",
-            }
-        );
+        const token = generateJWT({ userId: user._id });
         if (hash === user.hash) {
             return {
                 ...user._doc,
@@ -35,6 +27,7 @@ exports.login = async (req, res) => {
             };
         } else throw new Error("Invalid password");
     } catch (error) {
+        console.log(error);
         return res.status(400).send({
             message: "Invalid password",
         });
