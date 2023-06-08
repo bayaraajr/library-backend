@@ -1,40 +1,42 @@
+const { isBefore } = require("date-fns");
 const { Schema, model } = require("mongoose");
 const BookSchema = new Schema({
     isbn: {
         type: String,
-        required: function() {
+        required: function () {
             return this.isbn.length === 17;
-        }
+        },
     },
     name: {
         type: String,
-        required: true
+        required: true,
     },
     author: {
         type: String,
-        required: true
+        required: true,
     },
     publicationDate: {
         type: Date,
-       // required: true,
-        validate: function(value) {
-            return value < new Date();
-    }},
+        // required: true,
+        validate: function (value) {
+            return isBefore(new Date(value), new Date());
+        },
+    },
     coverUrl: String,
     description: String,
     filePath: String,
     category: {
         type: String,
-        required: true
+        required: true,
     },
     totalViews: {
         type: Number,
-        default: 0
+        default: 0,
     },
     loves: {
         type: Number,
-        default: 0
-    }
+        default: 0,
+    },
 });
 
 module.exports = model("book", BookSchema);
