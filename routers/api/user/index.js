@@ -8,7 +8,7 @@ const {
 module.exports = function (fastify, opts, next) {
     fastify.post("/", registerUser);
     fastify.post("/login", login);
-    fastify.put("/:email", updateUser);
+    fastify.put("/:id", updateUser);
     fastify.delete("/:id", deleteUser)
     next();
 };

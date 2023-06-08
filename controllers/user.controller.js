@@ -17,9 +17,15 @@ exports.login = async (req, res) => {
             .digest("hex");
 
         // @TODO Generate JWT (JSON Web Token)
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-            expiresIn: "10h",
-        });
+        const token = jwt.sign(
+            {
+                userId: user._id,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "10h",
+            }
+        );
         if (hash === user.hash) {
             return {
                 ...user._doc,
