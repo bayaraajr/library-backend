@@ -16,13 +16,24 @@ const BookSchema = new Schema({
     },
     publicationDate: {
         type: Date,
-        required: true
-    },
+       // required: true,
+        validate: function(value) {
+            return value < new Date();
+    }},
     coverUrl: String,
     description: String,
+    filePath: String,
     category: {
         type: String,
         required: true
+    },
+    totalViews: {
+        type: Number,
+        default: 0
+    },
+    loves: {
+        type: Number,
+        default: 0
     }
 });
 
