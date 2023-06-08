@@ -8,7 +8,17 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    phone: String,
+    phone: {
+        type: String,
+        required: true,
+        validate: {
+            validator: function (value) {
+                const phoneRegex = /^\d{8}$/;
+                return phoneRegex.test(value);
+            },
+            message: "Invalid phone number. Must be 8 digits.",
+        },
+    },
     email: {
         type: String,
         required: true,
@@ -29,7 +39,15 @@ const UserSchema = new Schema({
         required: true,
     },
     registrationNumber: String,
-    birthDate: Date,
+    birthDate: {
+        type: Date,
+        validate: {
+            validator: function (value) {
+                return value <= Date.now();
+            },
+            message: "BirthDate can not be in the future.",
+        },
+    },
 });
 
 module.exports = model("user", UserSchema);

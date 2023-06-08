@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
 exports.login = async (req, res) => {
     try {
@@ -16,16 +17,24 @@ exports.login = async (req, res) => {
             .digest("hex");
 
         // @TODO Generate JWT (JSON Web Token)
+        const token = jwt.sign(
+            {
+                userId: user._id,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "10h",
+            }
+        );
         if (hash === user.hash) {
             return {
                 ...user._doc,
-                token: "",
+                token,
                 hash: undefined,
                 salt: undefined,
             };
         } else throw new Error("Invalid password");
     } catch (error) {
-        console.log(error);
         return res.status(400).send({
             message: "Invalid password",
         });
@@ -56,9 +65,21 @@ exports.registerUser = async (req, res) => {
 };
 exports.updateUser = async (req, res) => {
     try {
-        await User.findOneAndUpdate(req.body.email, req.body);
+        await User.findByIdAndUpdate(req.params.id, req.body);
         return res.status(203).send({
             message: "Successfully changed a user",
+        });
+    } catch (error) {
+        return {
+            error: "Error",
+        };
+    }
+};
+exports.deleteUser = async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id, req.body);
+        return res.status(203).send({
+            message: "Successfully deleted a user",
         });
     } catch (error) {
         return {
