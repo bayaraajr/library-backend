@@ -1,4 +1,4 @@
-const { isBefore } = require("date-fns");
+const { isBefore, format } = require("date-fns");
 const { Schema, model } = require("mongoose");
 const BookSchema = new Schema({
     isbn: {
@@ -18,8 +18,15 @@ const BookSchema = new Schema({
     publicationDate: {
         type: Date,
         // required: true,
-        validate: function (value) {
-            return isBefore(new Date(value), new Date());
+        validate: {
+            validator: function (value) {
+                return isBefore(new Date(value), new Date());
+            },
+            message: (props) =>
+                `${format(
+                    new Date(props.value),
+                    "yyyy-MM-dd"
+                )} өнөөдрөөс хойш өдөр байна.`,
         },
     },
     coverUrl: String,

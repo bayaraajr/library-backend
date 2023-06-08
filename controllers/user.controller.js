@@ -3,35 +3,29 @@ const crypto = require("crypto");
 const { generateJWT } = require("../utils/jwt");
 
 exports.login = async (req, res) => {
-    try {
-        const user = await User.findOne({ email: req.body.email });
-        const hash = crypto
-            .createHash("sha256")
-            .update(req.body.password)
-            .update(
-                crypto
-                    .createHash("sha256")
-                    .update(user.salt, "utf8")
-                    .digest("hex")
-            )
-            .digest("hex");
+    const user = await User.findOne({ email: req.body.email });
+    const hash = crypto
+        .createHash("sha256")
+        .update(req.body.password)
+        .update(
+            crypto.createHash("sha256").update(user.salt, "utf8").digest("hex")
+        )
+        .digest("hex");
 
-        // @TODO Generate JWT (JSON Web Token)
-        const token = generateJWT({ userId: user._id });
-        if (hash === user.hash) {
-            return {
-                ...user._doc,
-                token,
-                hash: undefined,
-                salt: undefined,
-            };
-        } else throw new Error("Invalid password");
-    } catch (error) {
-        console.log(error);
-        return res.status(400).send({
+    // @TODO Generate JWT (JSON Web Token)
+    const token = generateJWT({ userId: user._id });
+    if (hash === user.hash) {
+        return res.status(200).send({
+            ...user._doc,
+            token,
+            hash: undefined,
+            salt: undefined,
+        });
+    } else
+        return res.status(401).send({
+            error: "AccesDenied",
             message: "Invalid password",
         });
-    }
 };
 exports.registerUser = async (req, res) => {
     try {
