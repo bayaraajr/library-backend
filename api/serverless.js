@@ -2,7 +2,7 @@ const fastify = require("fastify");
 const mongoose = require("mongoose");
 const autoload = require("@fastify/autoload");
 const path = require("path");
-const errorHandler = require("./plugins/error-handler");
+const errorHandler = require("../plugins/error-handler");
 
 require("dotenv").config();
 
@@ -10,7 +10,7 @@ const server = fastify({ logger: true });
 
 server.setErrorHandler(errorHandler);
 server.register(autoload, {
-    dir: path.join(__dirname, "routers"),
+    dir: path.join(__dirname, "..", "routers"),
     maxDepth: 10,
 });
 
