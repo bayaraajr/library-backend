@@ -81,20 +81,6 @@ exports.deleteUser = async (req, res) => {
     }
 };
 exports.getUser = async (req, res) => {
-    // const pageSize = 5;
-    // const currentPage = req.query.page || 1;
-    // const startIndex = (currentPage - 1) * pageSize;
-    // const endIndex = startIndex + pageSize;
-    // const users = await User.find()
-    //     .skip(startIndex)
-    //     .limit(pageSize)
-    //     .exec();
-    // return res.status(200).json({
-    //     users,
-    //     currentPage,
-    //     endIndex
-    // });
-
     const pageSize = req.query.size || 10;
     const pageNumber = req.query.page || 0;
 
