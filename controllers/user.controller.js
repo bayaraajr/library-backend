@@ -35,7 +35,7 @@ exports.login = async (req, res) => {
 };
 exports.registerUser = async (req, res) => {
     try {
-        // console.log(req);
+        // console.log(req);-
         const salt = crypto.randomBytes(20).toString("hex");
         const hash = crypto
             .createHash("sha256")
