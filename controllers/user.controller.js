@@ -3,29 +3,35 @@ const crypto = require("crypto");
 const { generateJWT } = require("../utils/jwt");
 
 exports.login = async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    const hash = crypto
-        .createHash("sha256")
-        .update(req.body.password)
-        .update(
-            crypto.createHash("sha256").update(user.salt, "utf8").digest("hex")
-        )
-        .digest("hex");
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        const hash = crypto
+            .createHash("sha256")
+            .update(req.body.password)
+            .update(
+                crypto
+                    .createHash("sha256")
+                    .update(user.salt, "utf8")
+                    .digest("hex")
+            )
+            .digest("hex");
 
-    // @TODO Generate JWT (JSON Web Token)
-    const token = generateJWT({ userId: user._id });
-    if (hash === user.hash) {
-        return res.status(200).send({
-            ...user._doc,
-            token,
-            hash: undefined,
-            salt: undefined,
-        });
-    } else
-        return res.status(401).send({
-            error: "AccesDenied",
+        // @TODO Generate JWT (JSON Web Token)
+        const token = generateJWT({ userId: user._id });
+        if (hash === user.hash) {
+            return {
+                ...user._doc,
+                token,
+                hash: undefined,
+                salt: undefined,
+            };
+        } else throw new Error("Invalid password");
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
             message: "Invalid password",
         });
+    }
 };
 exports.registerUser = async (req, res) => {
     try {
@@ -73,4 +79,20 @@ exports.deleteUser = async (req, res) => {
             error: "Error",
         };
     }
+};
+exports.getUser = async (req, res) => {
+    const pageSize = req.query.size || 10;
+    const pageNumber = req.query.page || 0;
+
+    const totalElements = await User.count();
+    const users = await User.find()
+        .skip(pageSize * pageNumber)
+        .limit(pageSize)
+        .exec();
+
+    return res.send({
+        content: users,
+        totalElements,
+        totalPage: parseInt(Math.ceil(totalElements / pageSize)),
+    });
 };
