@@ -17,3 +17,18 @@ exports.updateBook = async (req) => {
         message: "Successfully registered a book",
     };
 };
+
+exports.deleteBook = async (req, res) => {
+    try {
+        await Book.findByIdAndDelete(req.params.id, req.body);
+
+        return {
+            message: "Successfully deleted a Book",
+        };
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            error: "Error",
+        });
+    }
+};
