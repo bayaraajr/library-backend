@@ -15,10 +15,9 @@ server.register(autoload, {
 });
 
 const startServer = async () => {
+    console.log(process.env.DB_URL);
     try {
-        await mongoose.connect(
-            `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
-        );
+        await mongoose.connect(`${process.env.DB_URL}`);
 
         server.log.info("[SERVER] Connected to MongoDB");
         server.listen({
