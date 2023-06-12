@@ -32,3 +32,20 @@ exports.deleteBook = async (req, res) => {
         });
     }
 };
+
+exports.getBook = async (req, res) => {
+    const BookSize = req.query.size || 10;
+    const BookNumber = req.query.page || 0;
+
+    const totalElements = await Book.count();
+    const book = await Book.find()
+        .skip(BookSize * BookNumber)
+        .limit(BookSize)
+        .exec();
+
+    return res.send({
+        content: book,
+        totalElements,
+        totalPage: parseInt(Math.ceil(totalElements / BookSize)),
+    });
+};

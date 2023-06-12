@@ -2,11 +2,14 @@ const {
     createCategory,
     updateCategory,
     deleteCategory,
+    getGategory,
 } = require("../../../controllers/category.controller");
+const auth = require("../../../plugins/auth");
 
 module.exports = function (fastify, opts, next) {
-    fastify.post("/", createCategory);
-    fastify.put("/:id", updateCategory);
-    fastify.delete("/:id", deleteCategory);
+    fastify.post("/", { preHandler: auth }, createCategory);
+    fastify.put("/:id", { preHandler: auth }, updateCategory);
+    fastify.delete("/:id", { preHandler: auth }, deleteCategory);
+    fastify.get("/find", getGategory);
     next();
 };

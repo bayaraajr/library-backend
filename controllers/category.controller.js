@@ -49,3 +49,20 @@ exports.deleteCategory = async (req, res) => {
         });
     }
 };
+
+exports.getGategory = async (req, res) => {
+    const CategorySize = req.query.size || 10;
+    const CategoryNumber = req.query.page || 0;
+
+    const totalElements = await Category.count();
+    const gategories = await Category.find()
+        .skip(CategorySize * CategoryNumber)
+        .limit(CategorySize)
+        .exec();
+
+    return res.send({
+        content: gategories,
+        totalElements,
+        totalPage: parseInt(Math.ceil(totalElements / CategorySize)),
+    });
+};
