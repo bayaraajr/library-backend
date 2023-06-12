@@ -9,7 +9,7 @@ const AdminSchema = new Schema({
         required: true,
     },
     phone: {
-        type: Number,
+        type: String,
         validate: {
             validator: function (value) {
                 const phoneRagex = /^\d{8}$/;
@@ -24,8 +24,8 @@ const AdminSchema = new Schema({
         type: String,
         validate: {
             validator: function (value) {
-                const emailRagex = /^[^|s@]+0[^\s@]+\. [^\s@]+$/;
-                return emailRagex.test(value);
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value);
             },
             message: "Invalid email address",
         },
@@ -35,10 +35,20 @@ const AdminSchema = new Schema({
     hash: String,
     salt: String,
     gender: {
-        String,
+        type: String,
+        enum: ["F", "M"],
+        required: true,
     },
     registrationNumber: String,
-    birthDate: Date,
+    birthDate: {
+        type: Date,
+        validate: {
+            validator: function (value) {
+                return value <= Date.now();
+            },
+            message: "BirthDate can not be in the future.",
+        },
+    },
 });
 
 module.exports = model("admin", AdminSchema);
