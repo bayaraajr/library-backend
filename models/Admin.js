@@ -1,6 +1,16 @@
 const { Schema, model } = require("mongoose");
+const { isBefore, format } = require("date-fns");
 const AdminSchema = new Schema({
+    firstname: {
+        type: String,
+        required: true,
+    },
+    lastname: {
+        type: String,
+        required: true,
+    },
     phone: {
+        required: true,
         type: String,
         validate: {
             validator: function (value) {
@@ -12,6 +22,7 @@ const AdminSchema = new Schema({
         unique: true,
     },
     email: {
+        required: true,
         type: String,
         validate: {
             validator: function (value) {
@@ -31,12 +42,17 @@ const AdminSchema = new Schema({
     },
     registrationNumber: String,
     birthDate: {
+        required: true,
         type: Date,
         validate: {
             validator: function (value) {
-                return value <= Date.now();
+                return isBefore(new Date(value), new Date());
             },
-            message: "BirthDate can not be in the future.",
+            message: (props) =>
+                `${format(
+                    new Date(props.value),
+                    "yyyy-MM-dd"
+                )} өнөөдрөөс хойш өдөр байна.`,
         },
     },
 });
