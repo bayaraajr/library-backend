@@ -1,5 +1,13 @@
 const { Schema, model } = require("mongoose");
 const AdminSchema = new Schema({
+    firstname: {
+        type: String,
+        required: true,
+    },
+    lastname: {
+        type: String,
+        required: true,
+    },
     phone: {
         type: String,
         validate: {
