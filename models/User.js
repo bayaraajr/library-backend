@@ -40,6 +40,7 @@ const UserSchema = new Schema({
     },
     registrationNumber: String,
     birthDate: {
+        required: true,
         type: Date,
         validate: {
             validator: function (value) {
