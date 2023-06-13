@@ -86,10 +86,23 @@ exports.getUser = async (req, res) => {
     const pageSize = req.query.size || 10;
     const pageNumber = req.query.page || 0;
 
-    const totalElements = await User.count();
-    const users = await User.find()
+    const sortBy = req.query.sort || "lastname";
+    const order = req.query.order === "asc" ? 1 : -1;
+
+    let filter = {};
+    Object.keys(req.body).forEach((key) => {
+        filter[key] = {
+            $regex: ".*" + req.body[key] + ".*",
+        };
+    });
+
+    const totalElements = await User.count(filter);
+    const users = await User.find(filter)
         .skip(pageSize * pageNumber)
         .limit(pageSize)
+        .sort({
+            [sortBy]: order,
+        })
         .exec();
 
     return res.send({
