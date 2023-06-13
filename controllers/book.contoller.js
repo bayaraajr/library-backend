@@ -22,6 +22,10 @@ exports.deleteBook = async (req, res) => {
     try {
         await Book.findByIdAndDelete(req.params.id, req.body);
 
+        /**
+         * @TODO: Delete files from disk
+         */
+
         return {
             message: "Successfully deleted a Book",
         };
@@ -34,18 +38,43 @@ exports.deleteBook = async (req, res) => {
 };
 
 exports.getBook = async (req, res) => {
-    const BookSize = req.query.size || 10;
-    const BookNumber = req.query.page || 0;
+    const bookSize = req.query.size || 10;
+    const bookNumber = req.query.page || 0;
 
-    const totalElements = await Book.count();
-    const book = await Book.find()
-        .skip(BookSize * BookNumber)
-        .limit(BookSize)
+    const sortBy = req.query.sort || "name";
+    const order = req.query.order === "asc" ? 1 : -1;
+
+    let filter = {};
+    Object.keys(req.body).forEach((key) => {
+        if (key === "pubStartDate" || key === "pubEndDate") {
+            filter.publicationDate = {
+                $gte: new Date(req.body.pubStartDate),
+                $lt: new Date(req.body.pubEndDate),
+            };
+        }
+        // else if (key === "loves") {
+        //     filter.loves = {
+        //         $gte: req.body.loves,
+        //     };
+        // }
+        else
+            filter[key] = {
+                $regex: ".*" + req.body[key] + ".*",
+            };
+    });
+
+    const totalElements = await Book.count(filter);
+    const book = await Book.find(filter)
+        .skip(bookSize * bookNumber)
+        .limit(bookSize)
+        .sort({
+            [sortBy]: order,
+        })
         .exec();
 
     return res.send({
         content: book,
         totalElements,
-        totalPage: parseInt(Math.ceil(totalElements / BookSize)),
+        totalPage: parseInt(Math.ceil(totalElements / bookSize)),
     });
 };
