@@ -12,7 +12,7 @@ module.exports = function (fastify, opts, next) {
     fastify.post("/login", login);
     fastify.put("/:id", { preHandler: auth }, updateUser);
     fastify.delete("/:id", { preHandler: auth }, deleteUser);
-    fastify.get("/find", { preHandler: auth }, getUser);
+    fastify.post("/find", { preHandler: auth }, getUser);
     next();
 };
 
