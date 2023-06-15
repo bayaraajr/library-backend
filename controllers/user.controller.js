@@ -3,27 +3,18 @@ const crypto = require("crypto");
 const { generateJWT } = require("../utils/jwt");
 
 exports.registerUser = async (req, res) => {
-    try {
-        // console.log(req);
-        const salt = crypto.randomBytes(20).toString("hex");
-        const hash = crypto
-            .createHash("sha256")
-            .update(req.body.password)
-            .update(
-                crypto.createHash("sha256").update(salt, "utf8").digest("hex")
-            )
-            .digest("hex");
-        await User.create({ ...req.body, hash, salt });
+    // console.log(req);
+    const salt = crypto.randomBytes(20).toString("hex");
+    const hash = crypto
+        .createHash("sha256")
+        .update(req.body.password)
+        .update(crypto.createHash("sha256").update(salt, "utf8").digest("hex"))
+        .digest("hex");
+    await User.create({ ...req.body, hash, salt });
 
-        return res.status(201).send({
-            message: "Successfully registered a user",
-        });
-    } catch (error) {
-        console.log(error);
-        return {
-            error: "Error",
-        };
-    }
+    return res.status(201).send({
+        message: "Successfully registered a user",
+    });
 };
 
 exports.login = async (req, res) => {
@@ -32,12 +23,7 @@ exports.login = async (req, res) => {
         const hash = crypto
             .createHash("sha256")
             .update(req.body.password)
-            .update(
-                crypto
-                    .createHash("sha256")
-                    .update(user.salt, "utf8")
-                    .digest("hex")
-            )
+            .update(crypto.createHash("sha256").update(user.salt, "utf8").digest("hex"))
             .digest("hex");
 
         // @TODO Generate JWT (JSON Web Token)
@@ -59,28 +45,16 @@ exports.login = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-    try {
-        await User.findByIdAndUpdate(req.params.id, req.body);
-        return res.status(203).send({
-            message: "Successfully changed a user",
-        });
-    } catch (error) {
-        return {
-            error: "Error",
-        };
-    }
+    await User.findByIdAndUpdate(req.params.id, req.body);
+    return res.status(203).send({
+        message: "Successfully changed a user",
+    });
 };
 exports.deleteUser = async (req, res) => {
-    try {
-        await User.findByIdAndDelete(req.params.id, req.body);
-        return res.status(203).send({
-            message: "Successfully deleted a user",
-        });
-    } catch (error) {
-        return {
-            error: "Error",
-        };
-    }
+    await User.findByIdAndDelete(req.params.id, req.body);
+    return res.status(203).send({
+        message: "Successfully deleted a user",
+    });
 };
 exports.getUser = async (req, res) => {
     const pageSize = req.query.size || 10;
