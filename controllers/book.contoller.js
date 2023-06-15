@@ -1,4 +1,6 @@
 const Book = require("../models/Book");
+const fs = require("fs");
+const path = require("path");
 
 exports.registerBook = async (req, res) => {
     // console.log(req);
@@ -20,12 +22,22 @@ exports.updateBook = async (req) => {
 
 exports.deleteBook = async (req, res) => {
     try {
-        await Book.findByIdAndDelete(req.params.id, req.body);
+        const book = await Book.findById(req.params.id);
 
-        /**
-         * @TODO: Delete files from disk
-         */
+        if (!book)
+            return res.status(400).send({
+                message: "Book not found",
+            });
+        const coverUrl = book._doc.coverUrl;
+        const filePath = book._doc.filePath;
 
+        if (fs.existsSync(path.join(__dirname, "..", "public", "uploads", coverUrl)))
+            fs.unlinkSync(path.join(__dirname, "..", "public", "uploads", coverUrl));
+        if (fs.existsSync(path.join(__dirname, "..", "public", "uploads", filePath)))
+            fs.unlinkSync(path.join(__dirname, "..", "public", "uploads", filePath));
+
+        // await book.remove().exec();
+        await Book.findByIdAndDelete(req.params.id);
         return {
             message: "Successfully deleted a Book",
         };
