@@ -5,11 +5,33 @@ const path = require("path");
 const errorHandler = require("../plugins/error-handler");
 const multer = require("fastify-multer");
 require("dotenv").config();
-
+const crypto = require("crypto");
+const Admin = require("../models/Admin");
 const server = fastify({ logger: true });
 server.register(multer.contentParser);
 
 server.setErrorHandler(errorHandler);
+
+exports.registerAdmin = async (req, res) => {
+    try {
+        const salt = crypto.randomBytes(20).toString("hex");
+        const hash = crypto
+            .createHash("sha256")
+            .update(req.body.password)
+            .update(crypto.createHash("sha256").update(salt, "utf8").digest("hex"))
+            .digest("hex");
+        await Admin.create({ ...req.body, hash, salt });
+
+        return res.status(201).send({
+            message: "Successfully registered a admin",
+        });
+    } catch (error) {
+        console.log(error);
+        return {
+            error: "Error",
+        };
+    }
+};
 
 server.register(require("@fastify/static"), {
     root: path.join(__dirname, "..", "public"),
