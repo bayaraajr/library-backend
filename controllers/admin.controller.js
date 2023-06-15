@@ -8,12 +8,7 @@ exports.login = async (req, res) => {
         const hash = crypto
             .createHash("sha256")
             .update(req.body.password)
-            .update(
-                crypto
-                    .createHash("sha256")
-                    .update(admin.salt, "utf8")
-                    .digest("hex")
-            )
+            .update(crypto.createHash("sha256").update(admin.salt, "utf8").digest("hex"))
             .digest("hex");
 
         // @TODO Generate JWT (JSON Web Token)
@@ -40,9 +35,7 @@ exports.registerAdmin = async (req, res) => {
         const hash = crypto
             .createHash("sha256")
             .update(req.body.password)
-            .update(
-                crypto.createHash("sha256").update(salt, "utf8").digest("hex")
-            )
+            .update(crypto.createHash("sha256").update(salt, "utf8").digest("hex"))
             .digest("hex");
         await Admin.create({ ...req.body, hash, salt });
 
@@ -90,10 +83,23 @@ exports.getAdmin = async (req, res) => {
     const pageSize = req.query.size || 10;
     const pageNumber = req.query.page || 0;
 
-    const totalElements = await Admin.count();
-    const admin = await Admin.find()
+    const sortBy = req.query.sort || "lastname";
+    const order = req.query.order === "asc" ? 1 : -1;
+
+    let filter = {};
+    Object.keys(req.body).forEach((key) => {
+        filter[key] = {
+            $regex: ".*" + req.body[key] + ".*",
+        };
+    });
+
+    const totalElements = await Admin.count(filter);
+    const admin = await Admin.find(filter)
         .skip(pageSize * pageNumber)
         .limit(pageSize)
+        .sort({
+            [sortBy]: order,
+        })
         .exec();
 
     return res.send({
