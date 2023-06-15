@@ -24,7 +24,11 @@ const startServer = async () => {
     console.log(process.env.DB_URL);
     try {
         await mongoose.connect(`${process.env.DB_URL}`);
-
+        /**
+         * @TODO: select admin with email
+         * if user does not exists create admin
+         * otherwise do nothing
+         * */
         server.log.info("[SERVER] Connected to MongoDB");
         server.listen({
             port: process.env.PORT,

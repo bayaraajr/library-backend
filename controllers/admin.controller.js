@@ -90,10 +90,35 @@ exports.getAdmin = async (req, res) => {
     const pageSize = req.query.size || 10;
     const pageNumber = req.query.page || 0;
 
-    const totalElements = await Admin.count();
-    const admin = await Admin.find()
+    const sortBy = req.query.sort || "name";
+    const order = req.query.order === "asc" ? 1 : -1;
+
+    let filter = {};
+    Object.keys(req.body).forEach((key) => {
+        if (key === "pubStartDate" || key === "pubEndDate") {
+            filter.publicationDate = {
+                $gte: new Date(req.body.pubStartDate),
+                $lt: new Date(req.body.pubEndDate),
+            };
+        }
+        // else if (key === "loves") {
+        //     filter.loves = {
+        //         $gte: req.body.loves,
+        //     };
+        // }
+        else
+            filter[key] = {
+                $regex: ".*" + req.body[key] + ".*",
+            };
+    });
+
+    const totalElements = await Admin.count(filter);
+    const admin = await Admin.find(filter)
         .skip(pageSize * pageNumber)
         .limit(pageSize)
+        .sort({
+            [sortBy]: order,
+        })
         .exec();
 
     return res.send({

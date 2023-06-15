@@ -41,6 +41,10 @@ const AdminSchema = new Schema({
         required: true,
     },
     registrationNumber: String,
+    createdAtDatetime: {
+        type: Date,
+        defualt: new Date(),
+    },
     birthDate: {
         required: true,
         type: Date,
