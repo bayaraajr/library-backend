@@ -85,3 +85,17 @@ exports.getUser = async (req, res) => {
         totalPage: parseInt(Math.ceil(totalElements / pageSize)),
     });
 };
+
+exports.getUserById = async (req, res) => {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+        res.status(400).json({
+            message: "User not found",
+        });
+    }
+
+    res.send({
+        ...user,
+    });
+};

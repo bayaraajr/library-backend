@@ -108,3 +108,17 @@ exports.getAdmin = async (req, res) => {
         totalPage: parseInt(Math.ceil(totalElements / pageSize)),
     });
 };
+
+exports.getAdminById = async (req, res) => {
+    const admin = await Admin.findById(req.params.id);
+
+    if (!admin) {
+        res.status(400).json({
+            message: "Admin not found",
+        });
+    }
+
+    res.send({
+        ...admin,
+    });
+};
