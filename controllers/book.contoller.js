@@ -90,3 +90,17 @@ exports.getBook = async (req, res) => {
         totalPage: parseInt(Math.ceil(totalElements / bookSize)),
     });
 };
+
+exports.getBookById = async (req, res) => {
+    const book = await Book.findById(req.params.id);
+
+    if (!book) {
+        res.status(400).json({
+            message: "User not found",
+        });
+    }
+
+    res.send({
+        ...book,
+    });
+};
