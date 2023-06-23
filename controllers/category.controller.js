@@ -50,7 +50,7 @@ exports.deleteCategory = async (req, res) => {
     }
 };
 
-exports.getGategory = async (req, res) => {
+exports.getCategory = async (req, res) => {
     try {
         const CategorySize = req.query.size || 10;
         const CategoryNumber = req.query.page || 0;
