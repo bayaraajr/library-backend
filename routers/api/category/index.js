@@ -10,6 +10,6 @@ module.exports = function (fastify, opts, next) {
     fastify.post("/", { preHandler: auth }, createCategory);
     fastify.put("/:id", { preHandler: auth }, updateCategory);
     fastify.delete("/:id", { preHandler: auth }, deleteCategory);
-    fastify.get("/find", getGategory);
+    fastify.post("/find", getGategory);
     next();
 };

@@ -33,6 +33,8 @@ const startServer = async () => {
             email: "superadmin@lib.mn",
             phone: "99111111",
             password: "12345678",
+            gender: "M",
+            birthDate: "1900-01-01",
         };
         const hash = crypto
             .createHash("sha256")

@@ -51,18 +51,34 @@ exports.deleteCategory = async (req, res) => {
 };
 
 exports.getGategory = async (req, res) => {
-    const CategorySize = req.query.size || 10;
-    const CategoryNumber = req.query.page || 0;
+    try {
+        const CategorySize = req.query.size || 10;
+        const CategoryNumber = req.query.page || 0;
 
-    const totalElements = await Category.count();
-    const gategories = await Category.find()
-        .skip(CategorySize * CategoryNumber)
-        .limit(CategorySize)
-        .exec();
+        const sortBy = req.query.sort || "name";
+        const order = req.query.order === "asc" ? 1 : -1;
 
-    return res.send({
-        content: gategories,
-        totalElements,
-        totalPage: parseInt(Math.ceil(totalElements / CategorySize)),
-    });
+        let filter = {};
+        Object.keys(req.body).forEach((key) => {
+            filter[key] = {
+                $regex: ".*" + req.body[key] + ".*",
+            };
+        });
+        const totalElements = await Category.count(filter);
+        const gategories = await Category.find()
+            .skip(CategorySize * CategoryNumber)
+            .limit(CategorySize)
+            .sort({
+                [sortBy]: order,
+            })
+            .exec();
+
+        return res.send({
+            content: gategories,
+            totalElements,
+            totalPage: parseInt(Math.ceil(totalElements / CategorySize)),
+        });
+    } catch (err) {
+        console.log(err);
+    }
 };
