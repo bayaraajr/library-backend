@@ -1,5 +1,5 @@
 const Book = require("../models/Book");
-const Category = require("../models/Category");
+const category = require("../models/Category");
 const { Types } = require("mongoose");
 const fs = require("fs");
 const path = require("path");
@@ -7,7 +7,7 @@ const path = require("path");
 exports.registerBook = async (req, res) => {
     // console.log(req);
 
-    const categories = await Category.find({ _id: { $in: req.body.categories.map((e) => Types.ObjectId(e)) } });
+    const categories = await category.find({ _id: { $in: req.body.categories.map((e) => Types.ObjectId(e)) } });
     // const author = await Author.findById(req.body.author);
     await Book.create({
         ...req.body,
@@ -24,7 +24,7 @@ exports.updateBook = async (req) => {
     await Book.findByIdAndUpdate(req.params.id, req.body);
     // await Book.deleteOne("");
     return {
-        message: "Successfully registered a book",
+        message: "Successfully updated a book",
     };
 };
 
