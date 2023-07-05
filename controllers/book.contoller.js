@@ -1,11 +1,19 @@
 const Book = require("../models/Book");
+const Category = require("../models/Category");
+const { Types } = require("mongoose");
 const fs = require("fs");
 const path = require("path");
 
 exports.registerBook = async (req, res) => {
     // console.log(req);
-    await Book.create(req.body);
-    // await Book.deleteOne("");
+
+    const categories = await Category.find({ _id: { $in: req.body.categories.map((e) => Types.ObjectId(e)) } });
+    // const author = await Author.findById(req.body.author);
+    await Book.create({
+        ...req.body,
+        categories,
+        // author,
+    });
 
     return res.status(201).send({
         message: "Successfully registered a book",

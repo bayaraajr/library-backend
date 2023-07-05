@@ -6,13 +6,14 @@ const BookSchema = new Schema({
         required: function () {
             return this.isbn.length === 17;
         },
+        unique: true,
     },
     name: {
         type: String,
         required: true,
     },
     author: {
-        type: String,
+        type: Object,
         required: true,
     },
     publicationDate: {
@@ -22,18 +23,32 @@ const BookSchema = new Schema({
             validator: function (value) {
                 return isBefore(new Date(value), new Date());
             },
-            message: (props) =>
-                `${format(
-                    new Date(props.value),
-                    "yyyy-MM-dd"
-                )} өнөөдрөөс хойш өдөр байна.`,
+            message: (props) => `${format(new Date(props.value), "yyyy-MM-dd")} өнөөдрөөс хойш өдөр байна.`,
         },
     },
-    coverUrl: String,
-    description: String,
-    filePath: String,
-    category: {
+    isFeatured: {
         type: String,
+        enum: ["YES", "NO"],
+        required: true,
+    },
+    format: {
+        type: String,
+        enum: ["PDF", "EPUB"],
+        required: true,
+    },
+    coverUrl: String,
+    description: {
+        type: String,
+        required: true,
+    },
+    summary: {
+        // eslint-disable-next-line no-undef
+        type: Text,
+        required: true,
+    },
+    filePath: String,
+    categories: {
+        type: Object,
         required: true,
     },
     totalViews: {
