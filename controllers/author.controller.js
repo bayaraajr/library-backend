@@ -22,13 +22,10 @@ exports.deleteAuthor = async (req, res) => {
             return res.status(400).send({
                 message: "Author not found",
             });
-        const coverUrl = author._doc.coverUrl;
-        const filePath = author._doc.filePath;
+        const image = author._doc.image;
 
-        if (fs.existsSync(path.join(__dirname, "..", "public", "uploads", coverUrl)))
-            fs.unlinkSync(path.join(__dirname, "..", "public", "uploads", coverUrl));
-        if (fs.existsSync(path.join(__dirname, "..", "public", "uploads", filePath)))
-            fs.unlinkSync(path.join(__dirname, "..", "public", "uploads", filePath));
+        if (fs.existsSync(path.join(__dirname, "..", "public", "uploads", image)))
+            fs.unlinkSync(path.join(__dirname, "..", "public", "uploads", image));
 
         await Author.findByIdAndDelete(req.params.id);
         return {
@@ -69,5 +66,19 @@ exports.getAuthor = async (req, res) => {
         content: author,
         totalElements,
         totalPage: parseInt(Math.ceil(totalElements / pageSize)),
+    });
+};
+
+exports.getAuthorById = async (req, res) => {
+    const author = await Author.findById(req.params.id);
+
+    if (!author) {
+        res.status(400).json({
+            message: "Author not found",
+        });
+    }
+
+    res.send({
+        ...author,
     });
 };
