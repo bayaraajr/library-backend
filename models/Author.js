@@ -12,8 +12,7 @@ const AuthorSchema = new Schema({
         type: String,
         required: true,
     },
-    coverUrl: String,
-    filePath: String,
+    image: String,
 });
 
 module.exports = model("author", AuthorSchema);
